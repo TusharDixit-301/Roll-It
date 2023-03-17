@@ -1,10 +1,12 @@
 'use strict';
+import { startConfetti, stopConfetti } from './confetti.js';
 
-//!@ Selection Elements
+//!@ Selecting Elements
 const score0El = document.querySelector('#score--0');
 const score1El = document.getElementById('score--1');
 const currentScore0El = document.getElementById('current--0');
 const currentScore1El = document.getElementById('current--1');
+const dice = document.querySelector('.dice');
 const diceEl = document.querySelector('.dice');
 const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
@@ -14,9 +16,12 @@ const player1EL = document.querySelector('.player--1');
 
 //!@ Declaring Variables
 let totalScore, currentScore, activePlayer, playingState;
+const winAudio = new Audio('assests/Sounds/win.mp3');
+let diceNumber;
 
 //!@ Defining Functions
 const init = function () {
+  stopConfetti();
   totalScore = [0, 0];
   currentScore = 0;
   activePlayer = 0;
@@ -43,14 +48,48 @@ const switchPlayers = function () {
 btnRoll.addEventListener('click', function () {
   if (playingState) {
     //*@ Random Dice Number Generator
-    const diceNumber = Math.floor(Math.random() * 6) + 1;
-    console.log(diceNumber);
+    diceNumber = Math.floor(Math.random() * 6 + 1);
+    dice.style.animation = 'rolling 4s';
+    var audio = new Audio('assests/Sounds/diceSound.wav');
+    audio.play();
 
-    //*@ Display Dice Number
-    diceEl.classList.remove('hidden');
-    diceEl.src = `assests/images/dice-${diceNumber}.png`;
+    //*@ Dice Animation Generator
+    setTimeout(() => {
+      switch (diceNumber) {
+        case 1:
+          dice.style.transform = 'rotateX(0deg) rotateY(0deg)';
+          break;
 
-    //*@ Update Current Score and based on that switch sides
+        case 6:
+          dice.style.transform = 'rotateX(180deg) rotateY(0deg)';
+          break;
+
+        case 2:
+          dice.style.transform = 'rotateX(-90deg) rotateY(0deg)';
+          break;
+
+        case 5:
+          dice.style.transform = 'rotateX(90deg) rotateY(0deg)';
+          break;
+
+        case 3:
+          dice.style.transform = 'rotateX(0deg) rotateY(90deg)';
+          break;
+
+        case 4:
+          dice.style.transform = 'rotateX(0deg) rotateY(-90deg)';
+          break;
+
+        default:
+          break;
+      }
+      dice.style.animation = 'none';
+    }, 800);
+    dice.classList.remove('hidden');
+  }
+
+  //*@ Update Current Score and based on that switch sides
+  setTimeout(() => {
     if (diceNumber !== 1) {
       currentScore += diceNumber;
       document.getElementById(`current--${activePlayer}`).textContent =
@@ -58,7 +97,7 @@ btnRoll.addEventListener('click', function () {
     } else {
       switchPlayers();
     }
-  }
+  }, 900);
 });
 
 //? Hold button event
@@ -72,6 +111,8 @@ btnHold.addEventListener('click', function () {
     //? check whose score reached at 50
     if (totalScore[activePlayer] >= 50) {
       playingState = false;
+      startConfetti();
+      winAudio.play();
       document
         .querySelector(`.player--${activePlayer}`)
         .classList.add('player--winner');
@@ -88,6 +129,7 @@ btnHold.addEventListener('click', function () {
 //? Reset Game event
 
 btnNew.addEventListener('click', function () {
+  winAudio.pause();
   document
     .querySelector(`.player--${activePlayer}`)
     .classList.remove('player--winner');

@@ -26,12 +26,20 @@
           <p class="current-score" id="current--1">0</p>
         </div>
       </section>
-
-      <img src="assests/images/dice-5.png" alt="Playing dice" class="dice" />
+      <div class="dice">
+        <div class="face front"></div>
+        <div class="face back"></div>
+        <div class="face top"></div>
+        <div class="face bottom"></div>
+        <div class="face right"></div>
+        <div class="face left"></div>
+      </div>
       <button class="btn btn--new">🔄 New game</button>
-      <button class="btn btn--roll">🎲 Roll dice</button>
+      <button class="btn btn--roll roll">🎲 Roll dice</button>
       <button class="btn btn--hold">📥 Hold</button>
     </main>
-    <script src="scripts/script.js"></script>
+    <script type="module" src="scripts/confetti.js"></script>
+    <script type="module" src="scripts/script.js"></script>
+    <p class="copyright">© owned by FreakHouse Studios</p>
   </body>
 </html>
